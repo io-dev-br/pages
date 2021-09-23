@@ -6,13 +6,13 @@ categories: docker
 ---
 # Por que usar um proxy reverso com Docker?
 
-Containers recebem IPs aletórios, acessíveis apenas no hospedeiro. Você pode acessar o serviço do container mapeando a porta interna daquele serviço com uma porta no hospedeiro. Por exemplo, um container `nginx` cuja porta interna é a 8, mapeada para a porta 80 do hospedeiro:
+Containers recebem IPs aleatórios, acessíveis apenas no hospedeiro. Você pode acessar o serviço do container mapeando a porta interna daquele serviço com uma porta no hospedeiro. Por exemplo, um container `nginx` cuja porta interna é a 80, mapeada para a porta 80 do hospedeiro:
 
 ```
 docker run --name container-nginx-php7.4 -d -p 80:80 webdevops/php-nginx-dev:7.4
 ```
 
-E quando outros containers também usam a porta 80? Aí entra o proxy reverso. Considere 2 containers rodando nginx, mas sem mapear a porta 80 com o host:
+E quando outros containers também usam a porta 80? Aí entra o proxy reverso. Considere 2 containers rodando `nginx`, mas sem mapear a porta 80 com o hospedeiro:
 
 ```
 docker run --name container-nginx-php7.4 -d -p 80:80 webdevops/php-nginx-dev:7.4
@@ -34,16 +34,6 @@ A solução é automatizar a configuração do proxy reverso.
 
 [nginx-proxy](https://github.com/nginx-proxy/nginx-proxy/) configura um container rodando `nginx` e `docker-gen`. `docker-gen` gera um proxy reverso para `nginx` e recarrega `nginx` quando containers são iniciados ou encerrados no hospedeiro.
 
-## Arquitetura
-
-As requisições web são atendidas pelo proxy reverso e distribuídas para o respectivo container, conforme a URL solicitada.
-
-```mermaid
-graph TD;
-  ExternalUser-->nginx-proxy;
-  nginx-proxy-->container-nginx-php7.4;
-  nginx-proxy-->container-nginx-php8.0;
-```
 ## Requisitos
 
 * [Docker](https://docs.docker.com/engine/install/ubuntu/)
